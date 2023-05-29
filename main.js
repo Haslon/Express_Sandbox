@@ -3,7 +3,9 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const low = require("lowdb");
-const articlesRoutes = require("./router/articles")
+const swaggerUI = require("swagger-ui-express");
+const swaggerJSDoc = require("swagger-jsdoc");
+const articlesRoutes = require("./routes/articles");
 
 
 const port = process.env.PORT || 8081;
@@ -14,11 +16,11 @@ const db = low(adapter);
 
 db.defaults({articles: []}).write();
 
-const app = express();
 
-app.db = db;
 
-const options = {
+
+
+const option = {
     definition:{
         openapi: "3.0.0", 
         info: {
@@ -35,7 +37,16 @@ const options = {
     apis: [
         "./routes/*.js"
     ]
-}
+};
+
+const specs = swaggerJSDoc(option);
+
+const app = express();
+
+app.use('/api.docs', swaggerUI.serve, swaggerUI.setup(specs));
+
+app.db = db;
+
 
 app.use(cors());
 app.use(express.json()); 

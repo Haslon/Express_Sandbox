@@ -113,4 +113,4 @@ router.delete("/:id", (req, res) => {
         .write();
     res.sendStatus(200);
 });
-module.export = router
+module.exports = router;
